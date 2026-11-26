@@ -1,0 +1,13 @@
+@'
+venv/
+__pycache__/
+*.pyc
+.env
+*.db
+data/
+services/
+app.py
+generate_samples.py
+requirements.txt
+README.md
+'@ | Set-Content -Path .gitignore -Encoding utf8
