@@ -1,358 +1,366 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CareerLens AI — Intelligent Resume Screening & Job Matching</title>
+  <title>Career Lens — The right skill. The right opportunity.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 </head>
 <body>
-  <!-- Top Navigation -->
-  <header class="navbar">
-    <div class="container nav-inner">
-      <div class="brand" onclick="switchView('landing')">
-        <span class="brand-icon">◈</span>
-        <span class="brand-name">CareerLens <strong>AI</strong></span>
+  <!-- Intro Splash Screen -->
+  <div id="introOverlay" class="intro-overlay">
+    <div class="intro-card">
+      <div class="intro-logo-box">
+        <span class="intro-scan-icon">⌖</span>
       </div>
-      <div class="nav-actions">
-        <span class="badge {{ 'badge-success' if gemini_enabled else 'badge-warn' }}">
-          {{ 'Gemini AI Active' if gemini_enabled else 'Offline NLP Mode' }}
-        </span>
-        <button class="btn btn-ghost btn-sm" onclick="switchView('landing')">Home</button>
-        <button class="btn btn-ghost btn-sm" onclick="switchView('recruiter')">Recruiter</button>
-        <button class="btn btn-ghost btn-sm" onclick="switchView('seeker')">Job Seeker</button>
-        <button id="themeToggle" class="btn btn-outline btn-sm" title="Toggle Light/Dark Mode">🌓 Theme</button>
+      <h1 class="intro-title">Career Lens</h1>
+      <p class="intro-subtitle">The right skill. The right opportunity.</p>
+      <div class="intro-progress-track">
+        <div id="introProgressBar" class="intro-progress-fill"></div>
+      </div>
+    </div>
+    <button id="skipIntroBtn" class="skip-intro-btn" type="button" onclick="finishIntro()">Skip Intro</button>
+  </div>
+
+  <!-- Top Navigation -->
+  <header class="top-nav">
+    <div class="nav-inner">
+      <button class="brand-btn" type="button" onclick="goToWorkspace()">
+        <span class="brand-badge">⌖</span>
+        <span class="brand-name">Career Lens</span>
+      </button>
+      <div id="navRightActions" class="nav-right-actions hidden">
+        <button id="backToWorkspaceBtn" class="btn-ghost-sm" type="button" onclick="goToWorkspace()">
+          ← Back to Role Selection
+        </button>
       </div>
     </div>
   </header>
 
-  <!-- LANDING VIEW -->
-  <main id="view-landing" class="view active">
-    <section class="hero container">
-      <div class="hero-content">
-        <span class="pill">Explainable NLP + Gemini Career Intelligence</span>
-        <h1>Screen Smarter. Match Faster. Eliminate Resume Guesswork.</h1>
-        <p class="hero-sub">
-          CareerLens AI combines TF-IDF semantic matching, 220+ canonical skill taxonomy normalization,
-          ATS health diagnostics, and Gemini AI coaching in one transparent platform.
-        </p>
-        <div class="role-grid">
-          <div class="role-card" onclick="switchView('recruiter')">
-            <div class="role-icon">🏢</div>
-            <h3>Recruiter Workspace</h3>
-            <p>Bulk-upload 10–50 resumes, adjust scoring weights live, toggle blind screening, compare candidates, and export shortlists.</p>
-            <span class="role-cta">Launch Recruiter Mode →</span>
-          </div>
-          <div class="role-card" onclick="switchView('seeker')">
-            <div class="role-icon">🎯</div>
-            <h3>Job Seeker Studio</h3>
-            <p>Check your ATS health score, inspect keyword heatmaps, run What-If skill simulations, and rewrite bullets with Gemini AI.</p>
-            <span class="role-cta">Launch Job Seeker Mode →</span>
-          </div>
-        </div>
-      </div>
-    </section>
+  <!-- View 1: Choose Your Workspace -->
+  <main id="view-workspace" class="workspace-screen active">
+    <div class="workspace-pill">✦ Skill-First Recruitment Platform</div>
+    <h1 class="workspace-heading">Choose your workspace</h1>
+    <p class="workspace-sub">
+      Select how you would like to experience Career Lens. Connect skills with the right opportunities through a streamlined hiring workflow.
+    </p>
 
-    <section class="how-it-works container">
-      <h2>How CareerLens AI Works</h2>
-      <div class="steps-grid">
-        <div class="step-card">
-          <span class="step-num">01</span>
-          <h4>Multi-Layer Extraction</h4>
-          <p>Extracts text via PyMuPDF with OCR fallback and normalizes 220+ skill aliases (e.g., <code>js → javascript</code>).</p>
+    <div class="workspace-grid">
+      <div class="workspace-card" onclick="openPortal('recruiter')">
+        <div class="workspace-card-top">
+          <div class="icon-tile icon-tile-indigo">🏢</div>
+          <span class="status-pill status-active">Active Workspace</span>
         </div>
-        <div class="step-card">
-          <span class="step-num">02</span>
-          <h4>Explainable Hybrid Scoring</h4>
-          <p>Blends TF-IDF cosine similarity (50%), weighted must-have skill overlap (35%), and experience/education fit (15%).</p>
-        </div>
-        <div class="step-card">
-          <span class="step-num">03</span>
-          <h4>Actionable AI Copilot</h4>
-          <p>Generates prioritized learning roadmaps, STAR-method bullet rewrites, cover letters, and tailored interview questions.</p>
-        </div>
+        <h2 class="card-title-lg">Recruiter</h2>
+        <p class="card-desc">
+          Upload candidate resumes in bulk, define core role competencies, and automatically rank candidates by skill match.
+        </p>
+        <button class="link-action link-indigo" type="button">Open Recruiter Dashboard →</button>
       </div>
-    </section>
+
+      <div class="workspace-card" onclick="openPortal('candidate')">
+        <div class="workspace-card-top">
+          <div class="icon-tile icon-tile-violet">🎯</div>
+          <span class="status-pill status-interactive">Interactive Portal</span>
+        </div>
+        <h2 class="card-title-lg">Candidate</h2>
+        <p class="card-desc">
+          Import your resume or select your technical skills to check your job fit score across desirable career opportunities.
+        </p>
+        <button class="link-action link-violet" type="button">Open Candidate Portal →</button>
+      </div>
+    </div>
+
+    <footer class="workspace-footer">
+      Career Lens · The right skill. The right opportunity.
+    </footer>
   </main>
 
-  <!-- RECRUITER VIEW -->
-  <section id="view-recruiter" class="view container">
-    <div class="page-header">
-      <div>
-        <h2>Recruiter Screening & Ranking Workspace</h2>
-        <p class="muted">Create a job profile, upload candidate PDFs (or load demo resumes), and inspect explainable rankings.</p>
-      </div>
-      <div class="header-controls">
-        <label class="toggle-label">
-          <input type="checkbox" id="blindScreeningToggle" onchange="renderRecruiterTable()" />
-          <span>🕵️ Blind Screening Mode</span>
-        </label>
-        <a href="/api/export/shortlist" class="btn btn-outline btn-sm">⬇ Export Shortlist CSV</a>
-      </div>
-    </div>
-
-    <div class="grid-2-col">
-      <!-- Job Posting Setup -->
-      <div class="card">
-        <div class="card-header">
-          <h3>1. Job Requirements</h3>
-          <select id="recSampleJdSelect" class="input-sm" onchange="applyRecruiterSampleJD()">
-            <option value="">Load Sample JD...</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Job Title</label>
-          <input type="text" id="recJobTitle" class="input" value="Senior Machine Learning Engineer" />
-        </div>
-        <div class="form-group">
-          <label>Job Description</label>
-          <textarea id="recJdText" class="input" rows="4" placeholder="Paste full job description..."></textarea>
-        </div>
-        <div class="grid-2-col-tight">
-          <div class="form-group">
-            <label>Must-Have Skills (comma-separated)</label>
-            <input type="text" id="recMustSkills" class="input" value="python, machine learning, pytorch, deep learning, aws, docker" />
-          </div>
-          <div class="form-group">
-            <label>Nice-to-Have Skills</label>
-            <input type="text" id="recNiceSkills" class="input" value="natural language processing, kubernetes, hugging face, fastapi" />
-          </div>
-        </div>
-        <div class="grid-2-col-tight">
-          <div class="form-group">
-            <label>Min Experience (Years)</label>
-            <input type="number" id="recMinExp" class="input" value="3" min="0" max="20" step="0.5" />
-          </div>
-          <div class="form-group">
-            <label>Scoring Weights (Sim / Skill / Exp)</label>
-            <div class="weight-sliders">
-              <span id="weightDisplay">50% / 35% / 15%</span>
-              <input type="range" id="wSimSlider" min="10" max="80" value="50" oninput="updateWeightLabels()" />
-              <input type="range" id="wSkillSlider" min="10" max="80" value="35" oninput="updateWeightLabels()" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Bulk Resume Upload -->
-      <div class="card">
-        <div class="card-header">
-          <h3>2. Bulk Candidate Upload</h3>
-          <button class="btn btn-ghost btn-sm" onclick="runRecruiterRanking(true)">⚡ Run Demo with 6 Sample Resumes</button>
-        </div>
-        <div id="recDropzone" class="dropzone" onclick="document.getElementById('recFileInput').click()">
-          <input type="file" id="recFileInput" accept=".pdf" multiple hidden onchange="handleRecFilesSelected(this.files)" />
-          <div class="drop-icon">📄</div>
-          <p><strong>Drag & drop 10–50 PDF resumes here</strong> or click to browse</p>
-          <span id="recFileCount" class="muted">No files selected yet</span>
-        </div>
-        <div class="mt-16 flex-between">
-          <button class="btn btn-primary" onclick="runRecruiterRanking(false)">Rank Uploaded Resumes</button>
-          <button id="compareBtn" class="btn btn-outline" disabled onclick="openCompareModal()">Compare Selected (0/3)</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Loading Indicator -->
-    <div id="recLoader" class="loader hidden">Analyzing resumes, computing TF-IDF vectors, and checking duplicates...</div>
-
-    <!-- Recruiter Results Section -->
-    <div id="recResultsSection" class="hidden mt-24">
-      <div class="fairness-banner">
-        <strong>⚖️ Algorithmic Fairness Note:</strong> Scores are quantitative decision-support indicators based on text similarity and keyword overlap—not a final hiring verdict. Always review holistic candidate potential and use Blind Screening to reduce demographic bias.
-      </div>
-
-      <div id="duplicateAlert" class="alert-warn hidden mt-12"></div>
-
-      <!-- Analytics Charts -->
-      <div class="grid-3-col mt-16">
-        <div class="card chart-card">
-          <h4>Leaderboard Score Distribution</h4>
-          <canvas id="recScoreChart"></canvas>
-        </div>
-        <div class="card chart-card">
-          <h4>Top Skills Across Applicants</h4>
-          <canvas id="recTopSkillsChart"></canvas>
-        </div>
-        <div class="card chart-card">
-          <h4>Most Common Skill Gaps</h4>
-          <canvas id="recMissingSkillsChart"></canvas>
-        </div>
-      </div>
-
-      <!-- Ranked Leaderboard Table -->
-      <div class="card mt-20">
-        <div class="card-header">
-          <h3>Candidate Leaderboard (<span id="totalRankedCount">0</span>)</h3>
-          <span class="muted">Select up to 3 candidates to compare side-by-side</span>
-        </div>
-        <div class="table-responsive">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Compare</th>
-                <th>Rank</th>
-                <th>Candidate</th>
-                <th>Match Score</th>
-                <th>Exp / Edu</th>
-                <th>Matched Skills</th>
-                <th>Missing Skills</th>
-                <th>Decision</th>
-                <th>Insights</th>
-              </tr>
-            </thead>
-            <tbody id="recLeaderboardBody"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- JOB SEEKER VIEW -->
-  <section id="view-seeker" class="view container">
-    <div class="page-header">
-      <div>
-        <h2>Job Seeker Career & ATS Studio</h2>
-        <p class="muted">Upload your resume, test against target roles, simulate adding skills, and polish bullets with Gemini AI.</p>
-      </div>
-      <button id="downloadReportBtn" class="btn btn-outline btn-sm hidden" onclick="downloadTextReport()">⬇ Download Analysis Report</button>
-    </div>
-
-    <div class="grid-2-col">
-      <div class="card">
-        <div class="card-header">
-          <h3>1. Your Resume</h3>
-          <select id="seekerSampleResumeSelect" class="input-sm" onchange="loadSeekerSampleResume()">
-            <option value="">Load Sample Resume...</option>
-          </select>
-        </div>
-        <div id="seekerDropzone" class="dropzone" onclick="document.getElementById('seekerFileInput').click()">
-          <input type="file" id="seekerFileInput" accept=".pdf" hidden onchange="uploadSeekerResume(this.files[0])" />
-          <div class="drop-icon">📑</div>
-          <p><strong>Drop your PDF resume here</strong> or click to upload</p>
-          <span id="seekerFileName" class="muted">Supports standard & scanned PDFs</span>
-        </div>
-        <div id="seekerParsedSummary" class="parsed-box hidden mt-12"></div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">
-          <h3>2. Target Role or Job Description</h3>
-          <select id="seekerRoleSelect" class="input-sm" onchange="selectSeekerTargetRole()">
-            <option value="">Choose from 25+ Roles...</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Target Job Title</label>
-          <input type="text" id="seekerRoleTitle" class="input" value="Full Stack Software Engineer" />
-        </div>
-        <div class="form-group">
-          <label>Job Description</label>
-          <textarea id="seekerJdText" class="input" rows="4" placeholder="Paste target job description or pick a role above..."></textarea>
-        </div>
-        <div class="form-group">
-          <label>Key Required Skills (optional comma-separated)</label>
-          <input type="text" id="seekerMustSkills" class="input" placeholder="e.g. react, typescript, node.js, postgresql, docker" />
-        </div>
-        <button class="btn btn-primary" onclick="runSeekerAnalysis()">Analyze Match & ATS Health</button>
-      </div>
-    </div>
-
-    <div id="seekerLoader" class="loader hidden">Running ATS diagnostics, skill gap roadmap, and role recommender...</div>
-
-    <!-- Job Seeker Dashboard -->
-    <div id="seekerResultsSection" class="hidden mt-24">
-      <!-- Top KPIs & Charts -->
-      <div class="grid-3-col">
-        <div class="card center-card">
-          <h4>Role Match Score</h4>
-          <div class="gauge-wrap">
-            <canvas id="seekerGaugeChart"></canvas>
-            <div id="seekerScoreText" class="gauge-label">0%</div>
-          </div>
-          <p id="seekerMatchVerdict" class="muted mt-8"></p>
-        </div>
-
-        <div class="card center-card">
-          <h4>ATS Resume Health</h4>
-          <div class="ats-score-big" id="atsScoreBig">0 / 100</div>
-          <ul id="atsTipsList" class="tips-list"></ul>
-        </div>
-
-        <div class="card chart-card">
-          <h4>Competency Radar</h4>
-          <canvas id="seekerRadarChart"></canvas>
-        </div>
-      </div>
-
-      <!-- What-If Simulator & Keyword Heatmap -->
-      <div class="grid-2-col mt-20">
-        <div class="card">
-          <h3>⚡ What-If Skill Simulator</h3>
-          <p class="muted">Add hypothetical skills to see how your match score improves instantly.</p>
-          <div class="flex-row mt-12">
-            <input type="text" id="whatIfInput" class="input" placeholder="e.g. kubernetes, graphql, redis" />
-            <button class="btn btn-primary" onclick="runWhatIfSimulation()">Simulate</button>
-          </div>
-          <div id="whatIfChips" class="chip-wrap mt-12"></div>
-          <div id="whatIfResultBanner" class="mt-12"></div>
-        </div>
-
-        <div class="card">
-          <h3>🔍 JD Keyword Heatmap</h3>
-          <p class="muted"><span class="hl-matched">Green</span> = matched in your resume · <span class="hl-missing">Red</span> = missing target skill</p>
-          <div id="jdHeatmapBox" class="heatmap-box mt-12"></div>
-        </div>
-      </div>
-
-      <!-- Skill Gap Roadmap & Top 5 Job Recommendations -->
-      <div class="grid-2-col mt-20">
-        <div class="card">
-          <h3>🗺️ Prioritized Learning Roadmap</h3>
-          <div id="skillGapList" class="roadmap-list mt-12"></div>
-        </div>
-
-        <div class="card">
-          <h3>🚀 Top 5 Recommended Career Roles</h3>
-          <div id="topJobsList" class="roadmap-list mt-12"></div>
-        </div>
-      </div>
-
-      <!-- Gemini AI Career Copilot -->
-      <div class="card mt-20">
-        <h3>✨ Gemini AI Resume & Interview Copilot</h3>
-        <div class="grid-2-col mt-12">
+  <!-- View 2: Recruiter Dashboard -->
+  <div id="view-recruiter" class="portal-shell hidden">
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <div class="sidebar-brand">
+          <span class="sidebar-badge">⌖</span>
           <div>
-            <label>STAR-Style Bullet Point Rewriter</label>
-            <textarea id="bulletInput" class="input" rows="2" placeholder="Paste a weak resume bullet, e.g. 'Worked on backend APIs in Python'"></textarea>
-            <div class="flex-row mt-8">
-              <button class="btn btn-primary btn-sm" onclick="rewriteBullet()">Rewrite in STAR Format</button>
-              <button class="btn btn-outline btn-sm" onclick="generateSeekerTips()">Overall Resume Tips</button>
+            <div class="sidebar-title">Career Lens</div>
+            <div class="sidebar-sub">Recruiter Suite</div>
+          </div>
+        </div>
+
+        <nav class="sidebar-nav">
+          <button class="nav-item active" data-section="sec-overview" type="button" onclick="scrollToSection('sec-overview', this)">
+            <span class="nav-ico">⊞</span>
+            <span>Overview</span>
+          </button>
+          <button class="nav-item" data-section="sec-upload" type="button" onclick="scrollToSection('sec-upload', this)">
+            <span class="nav-ico">⇪</span>
+            <span>Resume Upload</span>
+          </button>
+          <button class="nav-item" data-section="sec-jd" type="button" onclick="scrollToSection('sec-jd', this)">
+            <span class="nav-ico">📄</span>
+            <span>Job Description</span>
+          </button>
+          <button class="nav-item" data-section="sec-ranking" type="button" onclick="scrollToSection('sec-ranking', this)">
+            <span class="nav-ico">🏅</span>
+            <span>Match Ranking</span>
+          </button>
+        </nav>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="switch-role-btn" type="button" onclick="openPortal('candidate')">
+          ⇄ Switch Role
+        </button>
+      </div>
+    </aside>
+
+    <main class="portal-main">
+      <div id="sec-overview" class="portal-header-row">
+        <div>
+          <h1 class="portal-title">Recruiter Dashboard</h1>
+          <p class="portal-subtitle">Upload candidate resumes, define desirable role skills, and rank applicants by skill alignment.</p>
+        </div>
+      </div>
+
+      <!-- KPI Summary Row -->
+      <section class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Uploaded Resumes</div>
+          <div id="kpiUploadedCount" class="kpi-value">0</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Target Skills Defined</div>
+          <div id="kpiTargetSkillsCount" class="kpi-value">6</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Top Candidate Match</div>
+          <div id="kpiTopMatch" class="kpi-value kpi-muted">—</div>
+        </div>
+      </section>
+
+      <!-- Two-Column Workspace: Resume Upload + Create Job Description -->
+      <section class="two-col-grid">
+        <!-- Resume Upload Card -->
+        <div id="sec-upload" class="panel-card">
+          <div class="panel-header-flex">
+            <h2 class="panel-title">Resume Upload</h2>
+            <span id="uploadedResumesBadge" class="count-pill">0 Resumes</span>
+          </div>
+
+          <div id="recDropzone" class="dropzone-box" onclick="document.getElementById('recFileInput').click()">
+            <input id="recFileInput" type="file" accept=".pdf,.doc,.docx,.txt" multiple hidden onchange="handleRecruiterFiles(this.files)" />
+            <div class="dropzone-icon">⇪</div>
+            <div class="dropzone-main">Drag &amp; drop resumes here</div>
+            <div class="dropzone-hint">Supports multiple files simultaneously (.PDF, .DOC, .DOCX)</div>
+            <button class="btn-indigo" type="button" onclick="event.stopPropagation(); document.getElementById('recFileInput').click()">
+              Select Resumes
+            </button>
+          </div>
+
+          <div id="recParsingBanner" class="parsing-banner hidden">
+            <span>Extracting resume text...</span>
+            <span class="tag-pill">Parsing Files...</span>
+          </div>
+
+          <div id="recUploadedListHeader" class="uploaded-list-header hidden">
+            <span id="recUploadedFilesLabel">Uploaded Files (0)</span>
+            <button class="link-danger-sm" type="button" onclick="clearRecruiterResumes()">Remove all</button>
+          </div>
+
+          <div id="recUploadedFileList" class="file-list-stack"></div>
+
+          <div id="recEmptyHint" class="empty-hint-box">
+            No resumes uploaded yet. Drop files above or click <strong>Select Resumes</strong> to build your candidate ranking.
+          </div>
+        </div>
+
+        <!-- Create Job Description Card -->
+        <div id="sec-jd" class="panel-card">
+          <div class="panel-header-flex">
+            <h2 class="panel-title">Create Job Description</h2>
+            <span id="selectedSkillsCounter" class="purple-pill">6 Skills Selected</span>
+          </div>
+
+          <div id="recRolePresets" class="preset-pills-row"></div>
+
+          <div class="form-row-3">
+            <div class="field-group">
+              <label class="field-label" for="recJobTitle">Job Title</label>
+              <input id="recJobTitle" class="text-input" type="text" value="Full-Stack Software Engineer" oninput="syncRecruiterRoleAndRank()" />
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="recLocation">Location</label>
+              <input id="recLocation" class="text-input" type="text" value="Bengaluru / Hybrid" oninput="syncRecruiterRoleAndRank()" />
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="recExperience">Experience</label>
+              <input id="recExperience" class="text-input" type="text" value="2–4 Years" oninput="syncRecruiterRoleAndRank()" />
             </div>
           </div>
-          <div>
-            <label>Application Prep Generators</label>
-            <p class="muted">Generate a custom cover letter or mock interview tailored to your gaps.</p>
-            <div class="flex-row mt-8">
-              <button class="btn btn-primary btn-sm" onclick="generateCoverLetter()">Generate Cover Letter</button>
-              <button class="btn btn-outline btn-sm" onclick="generateMockInterview()">Mock Interview Questions</button>
+
+          <div class="selected-skills-box">
+            <div class="field-label">Selected Skills</div>
+            <div id="recSelectedChips" class="chips-wrap"></div>
+          </div>
+
+          <div id="recTaxonomyContainer" class="taxonomy-groups"></div>
+
+          <div class="field-group mt-14">
+            <label class="field-label" for="recCustomSkillInput">Add Custom Skill to Role</label>
+            <div class="inline-add-row">
+              <input id="recCustomSkillInput" class="text-input" type="text" placeholder="e.g., TypeScript, Kubernetes, Figma" onkeydown="if(event.key==='Enter'){event.preventDefault();addRecruiterCustomSkill();}" />
+              <button class="btn-indigo-sm" type="button" onclick="addRecruiterCustomSkill()">+ Add</button>
+            </div>
+          </div>
+
+          <div class="field-group mt-14">
+            <div class="label-between">
+              <label class="field-label" for="recJdDetails">Job Description Details</label>
+              <button class="link-indigo-sm" type="button" onclick="insertSelectedSkillsIntoJd()">+ Insert Selected Skills</button>
+            </div>
+            <textarea id="recJdDetails" class="textarea-input" rows="4" oninput="updateJdCharCount(); syncRecruiterRoleAndRank();">Build scalable SaaS web applications, RESTful APIs, and containerized cloud deployments with React, Node.js, and Python.</textarea>
+            <div class="jd-meta-row">
+              <span id="recJdCharCount">120 characters</span>
+              <span>· Auto-saved</span>
             </div>
           </div>
         </div>
-        <div id="seekerAiOutput" class="ai-output-box hidden mt-16"></div>
-      </div>
-    </div>
-  </section>
+      </section>
 
-  <!-- CANDIDATE INSPECTOR / COMPARE MODAL -->
-  <div id="modalOverlay" class="modal-overlay hidden" onclick="closeModal(event)">
-    <div class="modal-card" onclick="event.stopPropagation()">
-      <div class="modal-header">
-        <h3 id="modalTitle">Candidate Breakdown</h3>
-        <button class="btn btn-ghost btn-sm" onclick="forceCloseModal()">✕</button>
+      <!-- Candidate Skill Match & Ranking Section -->
+      <section id="sec-ranking" class="panel-card mt-20">
+        <div class="panel-header-flex">
+          <div>
+            <h2 id="rankingSectionTitle" class="panel-title">Candidate Skill Match &amp; Ranking — Full-Stack Software Engineer</h2>
+            <p class="panel-sub-sm">Live comparison between parsed/individual candidate skills and your <span id="rankingSkillCountSpan">6</span> target skills</p>
+          </div>
+          <span id="evaluatedCountPill" class="count-pill">0 Evaluated</span>
+        </div>
+
+        <div id="recRankingEmpty" class="ranking-empty-box">
+          <div class="empty-doc-icon">📄</div>
+          <div class="empty-main">No candidate resumes to rank yet</div>
+          <div class="empty-sub">Upload one or more PDF/DOCX resumes to evaluate against your selected skills.</div>
+        </div>
+
+        <div id="recRankingCards" class="ranking-cards-stack"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- View 3: Candidate Career Portal (with Sidebar) -->
+  <div id="view-candidate" class="portal-shell hidden">
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <div class="sidebar-brand">
+          <span class="sidebar-badge">⌖</span>
+          <div>
+            <div class="sidebar-title">Career Lens</div>
+            <div class="sidebar-sub">Candidate Suite</div>
+          </div>
+        </div>
+
+        <nav class="sidebar-nav">
+          <button class="nav-item active" data-section="cand-overview" type="button" onclick="scrollToSection('cand-overview', this)">
+            <span class="nav-ico">⊞</span>
+            <span>Overview</span>
+          </button>
+          <button class="nav-item" data-section="cand-skills-sec" type="button" onclick="scrollToSection('cand-skills-sec', this)">
+            <span class="nav-ico">🎓</span>
+            <span>Skill Profile</span>
+          </button>
+          <button class="nav-item" data-section="cand-opps-sec" type="button" onclick="scrollToSection('cand-opps-sec', this)">
+            <span class="nav-ico">💼</span>
+            <span>Opportunities</span>
+          </button>
+        </nav>
       </div>
-      <div id="modalBody" class="modal-body"></div>
+
+      <div class="sidebar-footer">
+        <button class="switch-role-btn" type="button" onclick="openPortal('recruiter')">
+          ⇄ Switch Role
+        </button>
+      </div>
+    </aside>
+
+    <main class="portal-main">
+      <div id="cand-overview" class="portal-header-row">
+        <div>
+          <h1 class="portal-title">Candidate Career Portal</h1>
+          <p class="portal-subtitle">Select your skills or upload your resume to check your fit for desirable roles.</p>
+        </div>
+        <button class="btn-indigo-sm" type="button" onclick="openPortal('recruiter')">
+          ⇄ Switch to Recruiter
+        </button>
+      </div>
+
+      <div class="candidate-two-col">
+        <!-- Left: Your Skill Profile -->
+        <section id="cand-skills-sec" class="panel-card">
+          <div class="cand-card-header">
+            <span class="cand-header-icon">🎓</span>
+            <div>
+              <h2 class="panel-title">Your Skill Profile</h2>
+              <p class="panel-sub-sm">Auto-detect skills from your resume or toggle below</p>
+            </div>
+            <span id="candSkillCountPill" class="purple-pill ml-auto">4 Skills</span>
+          </div>
+
+          <div class="import-resume-box">
+            <div>
+              <div class="import-title">Import Skills from Resume</div>
+              <div id="candResumeStatusText" class="import-sub">Upload PDF or DOCX to auto-populate matching skills</div>
+            </div>
+            <input id="candFileInput" type="file" accept=".pdf,.doc,.docx,.txt" hidden onchange="handleCandidateResume(this.files[0])" />
+            <button class="btn-indigo-sm" type="button" onclick="document.getElementById('candFileInput').click()">
+              ⇪ Upload Resume
+            </button>
+          </div>
+
+          <div class="active-skills-box mt-16">
+            <div class="active-skills-title">✦ My Active Skills</div>
+            <div id="candActiveChips" class="chips-wrap"></div>
+          </div>
+
+          <div id="candTaxonomyContainer" class="taxonomy-groups mt-16"></div>
+
+          <div class="inline-add-row mt-16">
+            <input id="candCustomSkillInput" class="text-input" type="text" placeholder="Add another skill (e.g., TypeScript, AWS)..." onkeydown="if(event.key==='Enter'){event.preventDefault();addCandidateCustomSkill();}" />
+            <button class="btn-indigo-sm" type="button" onclick="addCandidateCustomSkill()">+ Add</button>
+          </div>
+        </section>
+
+        <!-- Right: Desirable Opportunities & Fit Check -->
+        <section id="cand-opps-sec" class="panel-card">
+          <div class="cand-card-header">
+            <span class="cand-header-icon cand-header-icon-amber">💼</span>
+            <div>
+              <h2 class="panel-title">Desirable Opportunities &amp; Fit Check</h2>
+              <p class="panel-sub-sm">Includes live roles created in the Recruiter Dashboard</p>
+            </div>
+            <span id="candRolesCountPill" class="count-pill ml-auto">3 Roles</span>
+          </div>
+
+          <div id="candOpportunitiesList" class="opportunities-stack mt-14"></div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Resume Text Preview Modal -->
+  <div id="previewModal" class="modal-backdrop hidden" onclick="if(event.target.id==='previewModal') closePreviewModal()">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 id="previewModalTitle">Resume Text Preview</h3>
+        <button class="modal-close-btn" type="button" onclick="closePreviewModal()">✕</button>
+      </div>
+      <pre id="previewModalBody" class="modal-pre"></pre>
     </div>
   </div>
 
