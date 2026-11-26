@@ -1,0 +1,29 @@
+[
+  {
+    "id": "opp-fullstack",
+    "title": "Full-Stack Software Engineer",
+    "company": "TechNova",
+    "location": "Bengaluru / Hybrid",
+    "experience": "2–4 Years",
+    "description": "Build scalable SaaS web applications, RESTful APIs, and containerized cloud deployments with React, Node.js, and Python.",
+    "required_skills": ["React", "Node.js", "Python", "SQL", "Docker", "Git"]
+  },
+  {
+    "id": "opp-frontend",
+    "title": "Frontend UI Engineer",
+    "company": "PixelCraft",
+    "location": "Delhi NCR / Hybrid",
+    "experience": "1–3 Years",
+    "description": "Craft accessible, responsive component systems and modern user interfaces using React, JavaScript, HTML, and CSS.",
+    "required_skills": ["React", "JavaScript", "HTML", "CSS", "Git"]
+  },
+  {
+    "id": "opp-ml",
+    "title": "Machine Learning & Data Scientist",
+    "company": "FrightGrid AI",
+    "location": "Hyderabad / Remote",
+    "experience": "1–3 Years",
+    "description": "Develop predictive models, NLP pipelines, and analytical SQL workflows for enterprise risk intelligence.",
+    "required_skills": ["Python", "Machine Learning", "Data Analysis", "SQL", "Deep Learning"]
+  }
+]

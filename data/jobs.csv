@@ -1,0 +1,13 @@
+﻿title,description,required_skills,nice_to_have_skills,min_experience,education
+Software Engineer,"Build scalable web applications, APIs, and microservices with clean code.",python;javascript;sql;git;rest api,docker;react;aws,1,B.Tech/B.E. in Computer Science
+Data Scientist,"Analyze datasets, build statistical models, and train machine learning systems.",python;machine learning;sql;pandas;statistics,scikit-learn;deep learning;data visualization,2,B.Tech/M.Tech/M.Sc
+Machine Learning Engineer,"Design, train, and deploy ML and NLP models into production.",python;machine learning;pytorch;docker;aws,deep learning;kubernetes;fastapi,3,B.Tech/M.Tech in Computer Science
+Full Stack Developer,"Build responsive frontends and backend APIs with modern web frameworks.",javascript;typescript;react;node.js;postgresql;rest api,docker;aws;redis,2,B.Tech/B.E. in CS or IT
+Frontend Developer,"Create interactive, accessible user interfaces and design systems.",javascript;react;html;css;git,typescript;tailwind css;figma,1,Bachelor's in Computer Science or Design
+Backend Developer,"Develop backend services, authentication, and relational databases.",python;sql;rest api;git;postgresql,fastapi;django;docker;redis,2,B.Tech/B.E. in Computer Science
+DevOps Engineer,"Automate cloud infrastructure, CI/CD pipelines, and container orchestration.",aws;docker;kubernetes;ci/cd;linux,terraform;ansible;github actions,3,B.Tech/B.E. in Computer Science
+Data Analyst,"Query databases, clean data, and build dashboards for business insights.",sql;python;pandas;power bi;excel,tableau;statistics,1,Bachelor's Degree
+Product Manager,"Define product roadmaps, PRDs, and user metrics with engineering and design.",product management;agile;scrum;sql;communication,figma;a/b testing;jira,3,MBA or B.Tech
+UI/UX Designer,"Conduct user research, wireframing, prototyping, and design systems.",figma;ui/ux;wireframing;prototyping;user research,design systems;css,1,Bachelor's in Design or related field
+Cybersecurity Analyst,"Monitor threats, perform vulnerability assessments, and harden systems.",linux;networking;security;python;incident response,siem;cloud security;docker,2,B.Tech/B.E. in CS/IT
+Cloud Architect,"Design resilient, cost-effective cloud architectures and distributed systems.",aws;kubernetes;terraform;system design;networking,docker;ci/cd;security,5,B.Tech/M.Tech in Computer Science

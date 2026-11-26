@@ -1,0 +1,21 @@
+{
+  "taxonomy": {
+    "PROGRAMMING": ["Python", "Java", "C++", "JavaScript"],
+    "WEB DEVELOPMENT": ["HTML", "CSS", "React", "Node.js"],
+    "DATA & AI": ["Machine Learning", "Data Analysis", "SQL", "Deep Learning"],
+    "TOOLS": ["Git", "GitHub", "Docker", "Excel"]
+  },
+  "aliases": {
+    "js": "JavaScript",
+    "reactjs": "React",
+    "react.js": "React",
+    "node": "Node.js",
+    "nodejs": "Node.js",
+    "ml": "Machine Learning",
+    "dl": "Deep Learning",
+    "postgres": "SQL",
+    "postgresql": "SQL",
+    "mysql": "SQL",
+    "sqlite": "SQL"
+  }
+}
